@@ -1,0 +1,48 @@
+.App {
+  text-align: center;
+  margin: auto;
+  max-width: 1200px;
+}
+
+.cases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.case {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.judges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.judge {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:transparent}
+.header .brand{font-weight:700;font-size:1.15rem}
+.header nav button{margin-left:8px;padding:8px 12px;border-radius:6px;border:1px solid transparent;background:transparent;cursor:pointer}
+.header nav button.active{background:var(--accent);color:#fff}
+
+/* Landing */
+.landing .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 16px}
+.hero-title{font-size:2.25rem;margin:0}
+.hero-sub{color:var(--muted);margin-top:8px}
+.hero-actions{margin-top:18px;display:flex;gap:12px}
+
+.view{margin-top:16px}
+
+body[data-theme='brown'] .brand{color:var(--accent-2)}
+body[data-theme='dark'] .brand{color:var(--accent)}
