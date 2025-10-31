@@ -8,6 +8,8 @@ import caseRoutes from "./routes/cases.js";
 import judgeRoutes from "./routes/judges.js";
 import userRoutes from "./routes/users.js";
 
+import notificationRoutes from "./routes/notifications.js";
+
 const app = express();
 
 // Middleware
@@ -27,6 +29,7 @@ app.use((err, req, res, next) => {
 app.use("/api", caseRoutes);
 app.use("/api", judgeRoutes);
 app.use("/api/auth", userRoutes);
+app.use("/api", notificationRoutes);
 
 // Test route
 app.get("/", (req, res) => {

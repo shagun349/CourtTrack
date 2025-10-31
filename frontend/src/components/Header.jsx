@@ -1,66 +1,81 @@
-import React, { useState } from 'react';
-import { logout } from '../api';
+import { useState } from 'react';
 
-export default function Header({ selection, onChange, user, onSearch, onLogout }) {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
-  const [theme, setTheme] = useState('dark');
+const Header = ({ selection, onChange, user, onSearch, onLogout, unreadNotifications }) => {
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // initialize theme on first render
-  React.useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
-
-  const handleSearchSubmit = (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    onChange(selection === 'judges' ? 'judges' : 'cases');
-    onSearch(query);
-    setOpen(false);
-  };
-
-  const handleLogout = () => {
-    logout();
-    onLogout();
+    onSearch(searchQuery);
   };
 
   return (
-    <header className="header">
-      <div className="header-left">
-        <div className="brand" onClick={() => onChange('landing')}>CourtTrack</div>
-        {user && (
-          <form className="search" onSubmit={handleSearchSubmit} role="search">
-            <input
-              aria-label="Search cases or judges"
-              placeholder={`Search ${selection === 'judges' ? 'judges' : 'cases'}...`}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </form>
-        )}
+    <header>
+      <div className="container header-content">
+        <div className="logo">CourtTrack</div>
+        <nav>
+          {user && (
+            <>
+              <button 
+                className={selection === 'cases' ? 'active' : ''} 
+                onClick={() => onChange('cases')}
+              >
+                Cases
+              </button>
+              {user.role === 'lawyer' && (
+                <button 
+                  className={selection === 'add-case' ? 'active' : ''} 
+                  onClick={() => onChange('add-case')}
+                >
+                  Add Case
+                </button>
+              )}
+              {user.role === 'client' && (
+                <button 
+                  className={selection === 'request-case' ? 'active' : ''} 
+                  onClick={() => onChange('request-case')}
+                >
+                  Request Case
+                </button>
+              )}
+            </>
+          )}
+        </nav>
+        <div className="header-right">
+          {user && (
+            <form onSubmit={handleSearch} className="search-form">
+              <input 
+                type="search" 
+                placeholder="Search..." 
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)} 
+              />
+              <button type="submit">Search</button>
+            </form>
+          )}
+          <div className="user-actions">
+            {user ? (
+              <>
+                <span className="welcome-message">Welcome, {user.name}</span>
+                <button className="notifications-btn" onClick={() => onChange('notifications')}>
+                  🔔
+                  {unreadNotifications > 0 && (
+                    <span className="notification-count">{unreadNotifications}</span>
+                  )}
+                </button>
+                <button className="btn" onClick={onLogout}>Logout</button>
+              </>
+            ) : (
+              <>
+                <button className="btn" onClick={() => onChange('login')}>Login</button>
+                <button className="btn" onClick={() => onChange('register')}>Register</button>
+              </>
+            )}
+          </div>
+        </div>
       </div>
-
-      <nav className={`nav ${open ? 'open' : ''}`} aria-label="Main navigation">
-        <button className={selection === 'landing' ? 'active' : ''} onClick={() => onChange('landing')}>Home</button>
-        {user ? (
-          <>
-            <button className={selection === 'cases' ? 'active' : ''} onClick={() => onChange('cases')}>Cases</button>
-            <button className={selection === 'judges' ? 'active' : ''} onClick={() => onChange('judges')}>Judges</button>
-            <span className="user-name">Hi, {user.name} <span className="user-role">({user.role})</span></span>
-            <button onClick={handleLogout}>Logout</button>
-            <button className="theme-toggle" onClick={() => { const next = theme === 'dark' ? 'brown' : 'dark'; setTheme(next); document.documentElement.dataset.theme = next; }}>Theme</button>
-          </>
-        ) : (
-          <>
-            <button className={selection === 'login' ? 'active' : ''} onClick={() => onChange('login')}>Login</button>
-            <button className={selection === 'register' ? 'active' : ''} onClick={() => onChange('register')}>Register</button>
-          </>
-        )}
-      </nav>
-
-      <button className="menu-toggle" onClick={() => setOpen((s) => !s)} aria-expanded={open} aria-label="Toggle menu">
-        ☰
-      </button>
     </header>
   );
-}
+};
+
+export default Header;
 

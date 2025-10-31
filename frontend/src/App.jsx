@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
-import { fetchCases, fetchJudges, getCurrentUser } from './api';
+import { fetchCases, getCurrentUser, fetchNotifications, logout } from './api';
 import Header from './components/Header';
 import CaseCard from './components/CaseCard';
-import JudgeCard from './components/JudgeCard';
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import Register from './components/Register';
+import AddCase from './components/AddCase';
+import RequestCase from './components/RequestCase';
+import Notifications from './components/Notifications';
 
 function App() {
   const [selection, setSelection] = useState('landing');
   const [cases, setCases] = useState([]);
-  const [judges, setJudges] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   // Check for existing auth token on mount
   useEffect(() => {
@@ -49,28 +51,31 @@ function App() {
         } finally {
           if (mounted) setLoading(false);
         }
-      } else if (selection === 'judges') {
-        setLoading(true);
-        try {
-          const data = await fetchJudges(searchQuery);
-          if (!mounted) return;
-          setJudges(data || []);
-        } catch {
-          if (!mounted) return;
-          setError('Failed to load judges');
-        } finally {
-          if (mounted) setLoading(false);
-        }
       }
     };
 
-    if (user && (selection === 'cases' || selection === 'judges')) {
+    if (user && selection === 'cases') {
       load();
     }
     return () => {
       mounted = false;
     };
   }, [selection, searchQuery, user]);
+
+  useEffect(() => {
+    const loadUnreadNotifications = async () => {
+      try {
+        const notifications = await fetchNotifications();
+        setUnreadNotifications(notifications.filter(n => !n.is_read).length);
+      } catch {
+        // Ignore error
+      }
+    };
+
+    if (user) {
+      loadUnreadNotifications();
+    }
+  }, [user]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -87,10 +92,18 @@ function App() {
   };
 
   const handleLogout = () => {
+    logout();
     setUser(null);
     setSelection('landing');
     setCases([]);
-    setJudges([]);
+  };
+
+  const handleMarkNotificationsAsRead = () => {
+    setUnreadNotifications(0);
+  };
+
+  const handleDeclineCase = (caseId) => {
+    setCases(cases.filter(c => c.id !== caseId));
   };
 
   return (
@@ -101,6 +114,7 @@ function App() {
         user={user}
         onSearch={handleSearch}
         onLogout={handleLogout}
+        unreadNotifications={unreadNotifications}
       />
 
       <main className="container">
@@ -121,20 +135,15 @@ function App() {
                 {!loading && !error && selection === 'cases' && (
                   <div className="grid cards">
                     {cases.map((c) => (
-                      <CaseCard key={c.id} item={c} />
+                      <CaseCard key={c.id} item={c} user={user} onDecline={handleDeclineCase} />
                     ))}
                     {cases.length === 0 && <div className="muted">No cases found.</div>}
                   </div>
                 )}
 
-                {!loading && !error && selection === 'judges' && (
-                  <div className="grid cards">
-                    {judges.map((j) => (
-                      <JudgeCard key={j.id} judge={j} />
-                    ))}
-                    {judges.length === 0 && <div className="muted">No judges found.</div>}
-                  </div>
-                )}
+                {selection === 'add-case' && user.role === 'lawyer' && <AddCase />}
+                {selection === 'request-case' && user.role === 'client' && <RequestCase />}
+                {selection === 'notifications' && <Notifications onMarkAsRead={handleMarkNotificationsAsRead} />}
               </>
             )}
           </section>

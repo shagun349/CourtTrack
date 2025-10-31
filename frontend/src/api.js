@@ -47,6 +47,27 @@ export const fetchCaseById = async (id) => {
   return res.data;
 };
 
+export const createCase = async (title, description, client_email) => {
+  const res = await api.post('/cases', { title, description, client_email });
+  return res.data;
+};
+
+export const requestCase = async (title, description, lawyer_email) => {
+  const res = await api.post('/cases/request', { title, description, lawyer_email });
+  return res.data;
+};
+
+export const approveCase = async (id) => {
+  const res = await api.put(`/cases/${id}/approve`);
+  return res.data;
+};
+
+export const declineCase = async (id) => {
+  const res = await api.delete(`/cases/${id}/decline`);
+  return res.data;
+};
+
+
 // Judges
 export const fetchJudges = async (search) => {
   const res = await api.get('/judges', { params: { search } });
@@ -55,6 +76,17 @@ export const fetchJudges = async (search) => {
 
 export const fetchJudgeById = async (id) => {
   const res = await api.get(`/judges/${id}`);
+  return res.data;
+};
+
+// Notifications
+export const fetchNotifications = async () => {
+  const res = await api.get('/notifications');
+  return res.data;
+};
+
+export const markNotificationsAsRead = async () => {
+  const res = await api.put('/notifications/mark-read');
   return res.data;
 };
 

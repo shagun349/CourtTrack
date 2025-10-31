@@ -112,6 +112,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user (protected route example)
+
 router.get('/me', auth, async (req, res) => {
   try {
     const db = await dbPromise;
