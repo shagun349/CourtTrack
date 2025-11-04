@@ -5,6 +5,7 @@ const AddCase = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [clientEmail, setClientEmail] = useState('');
+  const [hearingDate, setHearingDate] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
@@ -14,11 +15,12 @@ const AddCase = () => {
     setSuccess(null);
 
     try {
-      await createCase(title, description, clientEmail);
+      await createCase(title, description, clientEmail, hearingDate);
       setSuccess('Case created successfully!');
       setTitle('');
       setDescription('');
       setClientEmail('');
+      setHearingDate('');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create case');
     }
@@ -51,6 +53,15 @@ const AddCase = () => {
             type="email" 
             value={clientEmail} 
             onChange={(e) => setClientEmail(e.target.value)} 
+            required 
+          />
+        </div>
+        <div className="form-group">
+          <label>Hearing Date</label>
+          <input 
+            type="date" 
+            value={hearingDate} 
+            onChange={(e) => setHearingDate(e.target.value)} 
             required 
           />
         </div>

@@ -63,6 +63,10 @@ router.post('/register', async (req, res) => {
       'INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)',
       [name, email, hashedPassword, role]
     );
+
+    if (role === 'lawyer') {
+      await db.query('INSERT INTO lawyers (user_id) VALUES (?)', [result.insertId]);
+    }
     
     const token = jwt.sign({ user_id: result.insertId, role }, JWT_SECRET_KEY);
     res.status(201).json({ token, message: 'User registered successfully' });

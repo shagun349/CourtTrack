@@ -16,7 +16,8 @@ const initTables = async () => {
         filed_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         lawyer_id INT,
         client_id INT,
-        status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+        status ENUM('pending','approved','rejected', 'won', 'lost') DEFAULT 'pending',
+        hearing_date DATE,
         FOREIGN KEY (lawyer_id) REFERENCES users(user_id),
         FOREIGN KEY (client_id) REFERENCES users(user_id)
       )
@@ -97,7 +98,7 @@ router.get("/cases/:id", auth, async (req, res) => {
 router.post("/cases/request", auth, async (req, res) => {
   try {
     const db = await dbPromise;
-    const { title, description, lawyer_email } = req.body;
+    const { title, description, lawyer_email, hearing_date } = req.body;
     const client_id = req.user.user_id;
 
     // Find lawyer by email
@@ -113,8 +114,8 @@ router.post("/cases/request", auth, async (req, res) => {
 
     // Create case with pending status
     const [result] = await db.query(
-      "INSERT INTO cases (title, description, lawyer_id, client_id, status) VALUES (?, ?, ?, ?, 'pending')",
-      [title, description, lawyer_id, client_id]
+      "INSERT INTO cases (title, description, lawyer_id, client_id, status, hearing_date) VALUES (?, ?, ?, ?, 'pending', ?)",
+      [title, description, lawyer_id, client_id, hearing_date]
     );
 
     // Create notification for the lawyer
@@ -137,7 +138,7 @@ router.post("/cases/request", auth, async (req, res) => {
 router.post("/cases", auth, async (req, res) => {
   try {
     const db = await dbPromise;
-    const { title, description, client_email } = req.body;
+    const { title, description, client_email, hearing_date } = req.body;
     const lawyer_id = req.user.user_id;
 
     if (req.user.role !== 'lawyer') {
@@ -157,8 +158,8 @@ router.post("/cases", auth, async (req, res) => {
 
     // Create case with approved status
     const [result] = await db.query(
-      "INSERT INTO cases (title, description, lawyer_id, client_id, status) VALUES (?, ?, ?, ?, 'approved')",
-      [title, description, lawyer_id, client_id]
+      "INSERT INTO cases (title, description, lawyer_id, client_id, status, hearing_date) VALUES (?, ?, ?, ?, 'approved', ?)",
+      [title, description, lawyer_id, client_id, hearing_date]
     );
 
     // Create notification for the client
@@ -232,8 +233,8 @@ router.delete("/cases/:id/decline", auth, async (req, res) => {
     }
     const caseToDecline = cases[0];
 
-    // Delete case
-    await db.query("DELETE FROM cases WHERE id = ?", [case_id]);
+    // Update case status to rejected
+    await db.query("UPDATE cases SET status = 'rejected' WHERE id = ?", [case_id]);
 
     // Create notification for the client
     const notificationMessage = `Your case request for "${caseToDecline.title}" has been declined by your lawyer.`
@@ -242,11 +243,66 @@ router.delete("/cases/:id/decline", auth, async (req, res) => {
       [caseToDecline.client_id, notificationMessage]
     );
 
+
     res.json({ message: 'Case declined successfully' });
   } catch (err) {
     console.error('Error declining case:', err);
     res.status(500).json({ 
       message: 'Failed to decline case',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+});
+
+router.put("/cases/:id/flag", auth, async (req, res) => {
+  try {
+    const db = await dbPromise;
+    const case_id = req.params.id;
+    const lawyer_id = req.user.user_id;
+    const { status } = req.body; // 'won' or 'lost'
+
+    if (req.user.role !== 'lawyer') {
+      return res.status(403).json({ message: 'Only lawyers can flag cases' });
+    }
+
+    if (status !== 'won' && status !== 'lost') {
+      return res.status(400).json({ message: 'Invalid status. Must be \'won\' or \'lost\'' });
+    }
+
+    // Check if the case exists and belongs to the lawyer
+    const [cases] = await db.query("SELECT * FROM cases WHERE id = ? AND lawyer_id = ?", [case_id, lawyer_id]);
+    if (cases.length === 0) {
+      return res.status(404).json({ message: 'Case not found or you are not authorized to flag it' });
+    }
+    const caseToFlag = cases[0];
+
+    // Check if the case is approved
+    if (caseToFlag.status !== 'approved') {
+      return res.status(400).json({ message: 'Only approved cases can be flagged' });
+    }
+
+    // Check if hearing date has passed
+    const today = new Date();
+    const hearingDate = new Date(caseToFlag.hearing_date);
+    if (hearingDate > today) {
+      return res.status(400).json({ message: 'Cannot flag case before hearing date' });
+    }
+
+    // Update case status
+    await db.query("UPDATE cases SET status = ? WHERE id = ?", [status, case_id]);
+
+    // Create notification for the client
+    const notificationMessage = `Your case \"${caseToFlag.title}" has been marked as ${status} by your lawyer.`
+    await db.query(
+      "INSERT INTO notifications (user_id, message) VALUES (?, ?)",
+      [caseToFlag.client_id, notificationMessage]
+    );
+
+    res.json({ message: `Case marked as ${status} successfully` });
+  } catch (err) {
+    console.error('Error flagging case:', err);
+    res.status(500).json({ 
+      message: 'Failed to flag case',
       error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   }

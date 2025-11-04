@@ -8,6 +8,7 @@ import Register from './components/Register';
 import AddCase from './components/AddCase';
 import RequestCase from './components/RequestCase';
 import Notifications from './components/Notifications';
+import Lawyers from './components/Lawyers';
 
 function App() {
   const [selection, setSelection] = useState('landing');
@@ -106,6 +107,10 @@ function App() {
     setCases(cases.filter(c => c.id !== caseId));
   };
 
+  const handleApproveCase = (caseId) => {
+    setCases(cases.map(c => c.id === caseId ? { ...c, status: 'approved' } : c));
+  };
+
   return (
     <div className="app-root">
       <Header 
@@ -135,7 +140,7 @@ function App() {
                 {!loading && !error && selection === 'cases' && (
                   <div className="grid cards">
                     {cases.map((c) => (
-                      <CaseCard key={c.id} item={c} user={user} onDecline={handleDeclineCase} />
+                      <CaseCard key={c.id} item={c} user={user} onDecline={handleDeclineCase} onApprove={handleApproveCase} />
                     ))}
                     {cases.length === 0 && <div className="muted">No cases found.</div>}
                   </div>
@@ -144,6 +149,7 @@ function App() {
                 {selection === 'add-case' && user.role === 'lawyer' && <AddCase />}
                 {selection === 'request-case' && user.role === 'client' && <RequestCase />}
                 {selection === 'notifications' && <Notifications onMarkAsRead={handleMarkNotificationsAsRead} />}
+                {selection === 'lawyers' && <Lawyers />}
               </>
             )}
           </section>

@@ -21,6 +21,12 @@ const Header = ({ selection, onChange, user, onSearch, onLogout, unreadNotificat
               >
                 Cases
               </button>
+              <button 
+                className={selection === 'lawyers' ? 'active' : ''} 
+                onClick={() => onChange('lawyers')}
+              >
+                Lawyers
+              </button>
               {user.role === 'lawyer' && (
                 <button 
                   className={selection === 'add-case' ? 'active' : ''} 

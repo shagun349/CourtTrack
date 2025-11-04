@@ -5,6 +5,7 @@ const RequestCase = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [lawyerEmail, setLawyerEmail] = useState('');
+  const [hearingDate, setHearingDate] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
@@ -14,11 +15,12 @@ const RequestCase = () => {
     setSuccess(null);
 
     try {
-      await requestCase(title, description, lawyerEmail);
+      await requestCase(title, description, lawyerEmail, hearingDate);
       setSuccess('Case request sent successfully!');
       setTitle('');
       setDescription('');
       setLawyerEmail('');
+      setHearingDate('');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to send case request');
     }
@@ -51,6 +53,15 @@ const RequestCase = () => {
             type="email" 
             value={lawyerEmail} 
             onChange={(e) => setLawyerEmail(e.target.value)} 
+            required 
+          />
+        </div>
+        <div className="form-group">
+          <label>Hearing Date</label>
+          <input 
+            type="date" 
+            value={hearingDate} 
+            onChange={(e) => setHearingDate(e.target.value)} 
             required 
           />
         </div>

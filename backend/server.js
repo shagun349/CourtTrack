@@ -9,6 +9,7 @@ import judgeRoutes from "./routes/judges.js";
 import userRoutes from "./routes/users.js";
 
 import notificationRoutes from "./routes/notifications.js";
+import lawyerRoutes from "./routes/lawyers.js";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/api", caseRoutes);
 app.use("/api", judgeRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api", notificationRoutes);
+app.use("/api", lawyerRoutes);
 
 // Test route
 app.get("/", (req, res) => {
