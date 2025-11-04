@@ -35,6 +35,20 @@ initTables().catch(err => {
   process.exit(1);
 });
 
+router.get("/cases/count", async (req, res) => {
+  try {
+    const db = await dbPromise;
+    const [rows] = await db.query("SELECT COUNT(*) as count FROM cases");
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Error fetching case count:', err);
+    res.status(500).json({ 
+      message: 'Failed to fetch case count',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+});
+
 // Get all cases or search
 router.get("/cases", auth, async (req, res) => {
   try {
