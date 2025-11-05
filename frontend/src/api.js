@@ -42,6 +42,11 @@ export const fetchCases = async (search) => {
   return res.data;
 };
 
+export const fetchCaseCount = async () => {
+  const res = await api.get('/cases/count');
+  return res.data.count;
+};
+
 export const fetchCaseById = async (id) => {
   const res = await api.get(`/cases/${id}`);
   return res.data;
