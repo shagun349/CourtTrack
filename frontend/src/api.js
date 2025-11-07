@@ -101,6 +101,10 @@ export const fetchNotifications = async () => {
   return res.data;
 };
 
+export const fetchUnreadNotificationCount = async () => {
+  const res = await api.get('/notifications/unread-count');
+  return res.data.unreadCount;
+}
 export const markNotificationsAsRead = async () => {
   const res = await api.put('/notifications/mark-read');
   return res.data;
