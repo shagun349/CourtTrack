@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import Magnet from './Magnet';
 const Header = ({ selection, onChange, user, onSearch, onLogout, unreadNotifications }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -71,10 +71,16 @@ const Header = ({ selection, onChange, user, onSearch, onLogout, unreadNotificat
                 <button className="btn" onClick={onLogout}>Logout</button>
               </>
             ) : (
-              <>
-                <button className="btn" onClick={() => onChange('login')}>Login</button>
-                <button className="btn" onClick={() => onChange('register')}>Register</button>
-              </>
+             <>
+  <Magnet padding={200} magnetStrength={10}>
+    <button className="btn" id='login-btn' onClick={() => onChange('login')}>Login</button>
+  </Magnet>
+
+  <Magnet padding={200} magnetStrength={10}>
+    <button className="btn" onClick={() => onChange('register')}>Register</button>
+  </Magnet>
+</>
+
             )}
           </div>
         </div>

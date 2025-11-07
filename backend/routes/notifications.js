@@ -49,20 +49,45 @@ router.get("/notifications", auth, async (req, res) => {
   }
 });
 
-// Mark notifications as read
+// Count unread notifications
+router.get("/notifications/unread-count", auth, async (req, res) => {
+  try {
+    const db = await dbPromise;
+    const [[{ count }]] = await db.query(
+      "SELECT COUNT(*) AS count FROM notifications WHERE user_id = ? AND is_read = FALSE",
+      [req.user.user_id]
+    );
+    res.json({ unreadCount: count });
+  } catch (err) {
+    console.error("Error fetching unread count:", err);
+    res.status(500).json({ message: "Failed to fetch unread count" });
+  }
+});
+
+
+// * PUT /notifications/mark-read
+// * Marks all unread notifications for the logged-in user as read
+// * Returns the number of updated notifications and remaining unread 
 router.put("/notifications/mark-read", auth, async (req, res) => {
   try {
     const db = await dbPromise;
-    await db.query(
-      "UPDATE notifications SET is_read = TRUE WHERE user_id = ?",
-      [req.user.user_id]
-    );
-    res.json({ message: 'Notifications marked as read' });
+
+    // Call the stored procedure
+    const [rows] = await db.query("CALL MarkNotificationsRead(?)", [req.user.user_id]);
+
+    // MySQL CALL result is nested: [ [ [ {updated_count, remaining_unread} ] ], metadata ]
+    const { updated_count, remaining_unread } = rows[0][0];
+
+    res.json({
+      message: "✅ Notifications marked as read",
+      updated_count,
+      remaining_unread,
+    });
   } catch (err) {
-    console.error('Error marking notifications as read:', err);
-    res.status(500).json({ 
-      message: 'Failed to mark notifications as read',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    console.error("Error marking notifications as read:", err);
+    res.status(500).json({
+      message: "❌ Failed to mark notifications as read",
+      error: process.env.NODE_ENV === "development" ? err.message : undefined,
     });
   }
 });

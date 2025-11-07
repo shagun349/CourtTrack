@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchCases, getCurrentUser, fetchNotifications, logout } from './api';
+import { fetchCases, getCurrentUser, fetchNotifications, logout,fetchUnreadNotificationCount } from './api';
 import Header from './components/Header';
 import CaseCard from './components/CaseCard';
 import LandingPage from './components/LandingPage';
@@ -37,6 +37,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'brekke');
+  }, []);
+
+  useEffect(() => {
     let mounted = true;
     const load = async () => {
       setError(null);
@@ -64,19 +68,20 @@ function App() {
   }, [selection, searchQuery, user]);
 
   useEffect(() => {
-    const loadUnreadNotifications = async () => {
-      try {
-        const notifications = await fetchNotifications();
-        setUnreadNotifications(notifications.filter(n => !n.is_read).length);
-      } catch {
-        // Ignore error
-      }
-    };
-
-    if (user) {
-      loadUnreadNotifications();
+  const loadUnreadNotifications = async () => {
+    try {
+      // fetchUnreadNotificationCount() returns a number (unread count).
+      const unreadCount = await fetchUnreadNotificationCount();
+      setUnreadNotifications(unreadCount ?? 0);
+    } catch (err) {
+      console.error("Failed to load unread notifications:", err);
     }
-  }, [user]);
+  };
+
+  if (user) {
+    loadUnreadNotifications();
+  }
+}, [user]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
