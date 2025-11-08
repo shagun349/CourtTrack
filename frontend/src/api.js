@@ -69,7 +69,7 @@ export const approveCase = async (id) => {
 };
 
 export const declineCase = async (id) => {
-  const res = await api.delete(`/cases/${id}/decline`);
+  const res = await api.put(`/cases/${id}/decline`);
   return res.data;
 };
 

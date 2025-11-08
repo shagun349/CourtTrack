@@ -17,18 +17,7 @@
   padding: 20px;
 }
 
-.judges {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
 
-.judge {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-}
 
 /* Header */
 .header {
@@ -180,8 +169,8 @@ nav button.active {
 }
 
 .btn.primary {
-  
-  background: var(--accent);
+  padding: 8px;
+  background: #b97a2a;
   color: #111;
   border-color: transparent;
 }

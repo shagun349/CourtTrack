@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchCases, getCurrentUser, fetchNotifications, logout,fetchUnreadNotificationCount } from './api';
 import Header from './components/Header';
+import ErrorBoundary from './components/ErrorBoundary';
 import CaseCard from './components/CaseCard';
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
@@ -95,7 +96,8 @@ function App() {
   };
 
   const handleDeclineCase = (caseId) => {
-    setCases(cases.filter(c => c.id !== caseId));
+    console.log('handleDeclineCase called for case ID:', caseId);
+    setCases(cases.map(c => c.id === caseId ? { ...c, status: 'rejected' } : c));
   };
 
   const handleApproveCase = (caseId) => {
@@ -118,6 +120,7 @@ function App() {
       />
 
       <main className="container">
+        <ErrorBoundary>
         {selection === 'landing' && <LandingPage onSelectionChange={setSelection} />}
         
         {selection === 'login' && <Login onLogin={handleLogin} />}
@@ -162,6 +165,7 @@ function App() {
             )}
           </section>
         )}
+        </ErrorBoundary>
       </main>
     </div>
   );

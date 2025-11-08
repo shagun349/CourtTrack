@@ -15,8 +15,8 @@ export default function Lawyers({ user, onSelectLawyer }) {
       try {
         const data = await fetchLawyers();
         if (mounted) {
-          // Sort lawyers by wins in descending order
-          const sortedData = (data || []).sort((a, b) => b.wins - a.wins);
+          // Sort lawyers by wins in descending order, handling null values
+          const sortedData = (data || []).sort((a, b) => (b.wins || 0) - (a.wins || 0));
           setLawyers(sortedData);
         }
       } catch (err) {

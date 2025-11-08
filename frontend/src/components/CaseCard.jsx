@@ -13,6 +13,7 @@ const CaseCard = ({ item, user, onDecline, onApprove, onFlag }) => {
   };
 
   const handleDecline = async () => {
+    console.log('Decline button clicked for case ID:', item.id);
     try {
       await declineCase(item.id);
       onDecline(item.id);
@@ -40,7 +41,9 @@ const CaseCard = ({ item, user, onDecline, onApprove, onFlag }) => {
       <div className="card-title">{item.title}</div>
       <div className="card-body">{item.description}</div>
       <div className="card-meta">Status: {item.status}</div>
-      <div className="card-meta">Lawyer: {item.lawyer_name}</div>
+      <div className="card-meta">
+        {user && user.role === 'lawyer' ? `Client: ${item.client_name}` : `Lawyer: ${item.lawyer_name}`}
+      </div>
     
       {hearingDate && (
         <div className="card-meta">

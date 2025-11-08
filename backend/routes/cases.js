@@ -16,12 +16,18 @@ const initTables = async () => {
         filed_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         lawyer_id INT,
         client_id INT,
-        status ENUM('pending', 'approved', 'won', 'lost') DEFAULT 'pending',
+        status ENUM('pending', 'approved', 'rejected', 'won', 'lost') DEFAULT 'pending',
         hearing_date DATE,
         FOREIGN KEY (lawyer_id) REFERENCES users(user_id),
         FOREIGN KEY (client_id) REFERENCES users(user_id)
       )
     `);
+    // Ensure existing table includes 'rejected' in the enum (best-effort alter for existing DBs)
+    try {
+      await db.query("ALTER TABLE cases MODIFY COLUMN status ENUM('pending', 'approved', 'rejected', 'won', 'lost') DEFAULT 'pending'");
+    } catch (err) {
+      // Ignore errors from ALTER (e.g., column already has the value list or DB doesn't support modification). The CREATE above will handle new databases.
+    }
     console.log('✅ Cases table initialized');
   } catch (err) {
     console.error('Error creating cases table:', err);
@@ -247,7 +253,7 @@ router.put("/cases/:id/approve", auth, async (req, res) => {
   }
 });
 
-router.delete("/cases/:id/decline", auth, async (req, res) => {
+router.put("/cases/:id/decline", auth, async (req, res) => {
   try {
     const db = await dbPromise;
     const case_id = req.params.id;
@@ -264,18 +270,18 @@ router.delete("/cases/:id/decline", auth, async (req, res) => {
     }
     const caseToDecline = cases[0];
 
-    // Delete the case
-    await db.query("DELETE FROM cases WHERE id = ?", [case_id]);
+    // Update the case status to 'rejected'
+    await db.query("UPDATE cases SET status = 'rejected' WHERE id = ?", [case_id]);
 
     // Create notification for the client
-    const notificationMessage = `Your case request for "${caseToDecline.title}" has been declined by your lawyer.`
+    const notificationMessage = `Your case request for "${caseToDecline.title}" has been rejected by your lawyer.`
     await db.query(
       "INSERT INTO notifications (user_id, message) VALUES (?, ?)",
       [caseToDecline.client_id, notificationMessage]
     );
 
 
-    res.json({ message: 'Case declined successfully' });
+    res.json({ message: 'Case rejected successfully' });
   } catch (err) {
     console.error('Error declining case:', err);
     res.status(500).json({ 

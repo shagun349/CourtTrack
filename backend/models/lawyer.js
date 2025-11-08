@@ -11,7 +11,12 @@ async function getAllLawyers() {
       u.email,
       COUNT(c.id) AS total_cases,
       SUM(CASE WHEN c.status = 'won' THEN 1 ELSE 0 END) AS wins,
-      SUM(CASE WHEN c.status = 'lost' THEN 1 ELSE 0 END) AS losses
+      SUM(CASE WHEN c.status = 'lost' THEN 1 ELSE 0 END) AS losses,
+      SUM(CASE WHEN c.status = 'approved' THEN 1 ELSE 0 END) AS approved_cases,
+      SUM(CASE WHEN c.status = 'rejected' THEN 1 ELSE 0 END) AS rejected_cases,
+      (SUM(CASE WHEN c.status = 'approved' THEN 1 ELSE 0 END) / 
+       NULLIF(SUM(CASE WHEN c.status = 'approved' THEN 1 ELSE 0 END) + 
+              SUM(CASE WHEN c.status = 'rejected' THEN 1 ELSE 0 END), 0)) * 100 AS approval_rate
     FROM users u
     JOIN lawyers l ON u.user_id = l.user_id
     LEFT JOIN cases c ON u.user_id = c.lawyer_id

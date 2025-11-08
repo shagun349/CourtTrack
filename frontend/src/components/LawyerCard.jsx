@@ -15,8 +15,18 @@ export default function LawyerCard({ lawyer, user, onSelect }) {
       <p className="card-body">Total Cases: {lawyer.total_cases}</p>
       <p className="card-body">Wins: {lawyer.wins}</p>
       <p className="card-body">Losses: {lawyer.losses}</p>
+      {lawyer.approval_rate !== null && (
+        (() => {
+          const rate = Number(lawyer.approval_rate);
+          if (Number.isFinite(rate)) {
+            return <p className="card-body">Approval Rate: {rate.toFixed(1)}%</p>;
+          }
+          // fallback: show as-is or indicate N/A
+          return <p className="card-body">Approval Rate: N/A</p>;
+        })()
+      )}
       {user && user.role === 'client' && (
-        <button onClick={handleRequest} className="button-primary">
+        <button onClick={handleRequest} className="btn primary">
           Request Lawyer
         </button>
       )}
