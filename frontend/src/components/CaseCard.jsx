@@ -1,8 +1,8 @@
 import React from 'react';
-
+import { format } from 'date-fns';
 import { approveCase, declineCase, flagCase } from '../api';
 
-const CaseCard = ({ item, user, onDecline, onApprove }) => {
+const CaseCard = ({ item, user, onDecline, onApprove, onFlag }) => {
   const handleApprove = async () => {
     try {
       await approveCase(item.id);
@@ -24,7 +24,7 @@ const CaseCard = ({ item, user, onDecline, onApprove }) => {
   const handleFlag = async (status) => {
     try {
       await flagCase(item.id, status);
-      // You might want to update the UI to reflect the change
+      onFlag(item.id, status);
     } catch (err) {
       console.error(`Failed to flag case as ${status}`, err);
     }
@@ -33,7 +33,7 @@ const CaseCard = ({ item, user, onDecline, onApprove }) => {
   const rawHearing = item.hearing_date || item.hearingDate || item.hearing;
   const hearingDate = rawHearing ? new Date(rawHearing) : null;
   const hearingDatePassed = hearingDate && hearingDate < new Date();
-  const hearingLabel = hearingDate ? hearingDate.toLocaleDateString() : null;
+  const hearingLabel = hearingDate ? format(hearingDate, 'dd-MM-yyyy') : 'N/A';
 
   return (
     <div className="card case-card">

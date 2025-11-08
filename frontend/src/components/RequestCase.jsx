@@ -1,13 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { requestCase } from '../api';
 
-const RequestCase = () => {
+const RequestCase = ({ lawyerEmail: initialLawyerEmail, onClearLawyerEmail }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [lawyerEmail, setLawyerEmail] = useState('');
   const [hearingDate, setHearingDate] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+
+  useEffect(() => {
+    if (initialLawyerEmail) {
+      setLawyerEmail(initialLawyerEmail);
+      // Clear the email in the parent state so it's not reused
+      if (onClearLawyerEmail) {
+        onClearLawyerEmail();
+      }
+    }
+  }, [initialLawyerEmail, onClearLawyerEmail]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

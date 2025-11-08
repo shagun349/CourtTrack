@@ -5,8 +5,8 @@ import express from "express";
 import cors from "cors";
 import { dbPromise } from "./db.js";
 import caseRoutes from "./routes/cases.js";
-import judgeRoutes from "./routes/judges.js";
 import userRoutes from "./routes/users.js";
+
 
 import notificationRoutes from "./routes/notifications.js";
 import lawyerRoutes from "./routes/lawyers.js";
@@ -28,7 +28,6 @@ app.use((err, req, res, next) => {
 
 // Routes
 app.use("/api", caseRoutes);
-app.use("/api", judgeRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", lawyerRoutes);

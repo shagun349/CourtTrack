@@ -18,6 +18,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [lawyerEmailForRequest, setLawyerEmailForRequest] = useState(null);
 
 
 
@@ -101,6 +102,10 @@ function App() {
     setCases(cases.map(c => c.id === caseId ? { ...c, status: 'approved' } : c));
   };
 
+  const handleFlagCase = (caseId, status) => {
+    setCases(cases.map(c => c.id === caseId ? { ...c, status: status } : c));
+  };
+
   return (
     <div className="app-root">
       <Header 
@@ -130,16 +135,29 @@ function App() {
                 {!loading && !error && selection === 'cases' && (
                   <div className="grid cards">
                     {cases.map((c) => (
-                      <CaseCard key={c.id} item={c} user={user} onDecline={handleDeclineCase} onApprove={handleApproveCase} />
+                      <CaseCard key={c.id} item={c} user={user} onDecline={handleDeclineCase} onApprove={handleApproveCase} onFlag={handleFlagCase} />
                     ))}
                     {cases.length === 0 && <div className="muted">No cases found.</div>}
                   </div>
                 )}
 
                 {selection === 'add-case' && user.role === 'lawyer' && <AddCase />}
-                {selection === 'request-case' && user.role === 'client' && <RequestCase />}
+                {selection === 'request-case' && user.role === 'client' && (
+                  <RequestCase
+                    lawyerEmail={lawyerEmailForRequest}
+                    onClearLawyerEmail={() => setLawyerEmailForRequest(null)}
+                  />
+                )}
                 {selection === 'notifications' && <Notifications onMarkAsRead={handleMarkNotificationsAsRead} />}
-                {selection === 'lawyers' && <Lawyers />}
+                {selection === 'lawyers' && (
+                  <Lawyers 
+                    user={user}
+                    onSelectLawyer={(email) => {
+                      setLawyerEmailForRequest(email);
+                      setSelection('request-case');
+                    }}
+                  />
+                )}
               </>
             )}
           </section>

@@ -16,7 +16,7 @@ const initTables = async () => {
         filed_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         lawyer_id INT,
         client_id INT,
-        status ENUM('pending','approved','rejected', 'won', 'lost') DEFAULT 'pending',
+        status ENUM('pending', 'approved', 'won', 'lost') DEFAULT 'pending',
         hearing_date DATE,
         FOREIGN KEY (lawyer_id) REFERENCES users(user_id),
         FOREIGN KEY (client_id) REFERENCES users(user_id)
@@ -264,8 +264,8 @@ router.delete("/cases/:id/decline", auth, async (req, res) => {
     }
     const caseToDecline = cases[0];
 
-    // Update case status to rejected
-    await db.query("UPDATE cases SET status = 'rejected' WHERE id = ?", [case_id]);
+    // Delete the case
+    await db.query("DELETE FROM cases WHERE id = ?", [case_id]);
 
     // Create notification for the client
     const notificationMessage = `Your case request for "${caseToDecline.title}" has been declined by your lawyer.`

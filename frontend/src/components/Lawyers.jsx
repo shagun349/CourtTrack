@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { fetchLawyers } from '../api';
 import LawyerCard from './LawyerCard';
 
-export default function Lawyers() {
+export default function Lawyers({ user, onSelectLawyer }) {
   const [lawyers, setLawyers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -15,7 +15,9 @@ export default function Lawyers() {
       try {
         const data = await fetchLawyers();
         if (mounted) {
-          setLawyers(data || []);
+          // Sort lawyers by wins in descending order
+          const sortedData = (data || []).sort((a, b) => b.wins - a.wins);
+          setLawyers(sortedData);
         }
       } catch (err) {
         if (mounted) {
@@ -42,7 +44,7 @@ export default function Lawyers() {
       {!loading && !error && (
         <div className="grid cards">
           {lawyers.map((l) => (
-            <LawyerCard key={l.id} lawyer={l} />
+            <LawyerCard key={l.id} lawyer={l} user={user} onSelect={onSelectLawyer} />
           ))}
           {lawyers.length === 0 && <div className="muted">No lawyers found.</div>}
         </div>

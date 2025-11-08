@@ -79,17 +79,6 @@ export const flagCase = async (id, status) => {
 };
 
 
-// Judges
-export const fetchJudges = async (search) => {
-  const res = await api.get('/judges', { params: { search } });
-  return res.data;
-};
-
-export const fetchJudgeById = async (id) => {
-  const res = await api.get(`/judges/${id}`);
-  return res.data;
-};
-
 // Lawyers
 export const fetchLawyers = async () => {
   const res = await api.get('/lawyers');
