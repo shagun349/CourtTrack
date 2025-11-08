@@ -33,9 +33,9 @@ const containerRef = useRef(null);
 
       <div className="hero">
         <h1 className="hero-title">CourtTrack</h1>
-        <p className="hero-sub">A clean, simple UI for tracking cases and judges.</p>
+        <p className="hero-sub">A clean, simple UI for tracking cases and Lawyers.</p>
 
-        <div className="hero-stats" style={{marginTop:16}}>
+        <div className="hero-stats" style={{marginTop:16, marginBottom:100}}>
           <div style={{textAlign:'center'}}>
             <div style={{fontSize:14,color:'var(--muted)'}}>Total cases tracked in our database</div>
             {!loading ? (

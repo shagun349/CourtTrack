@@ -56,21 +56,37 @@ router.get("/cases", auth, async (req, res) => {
     const { search } = req.query;
     const { user_id, role } = req.user;
 
-    let query = "SELECT * FROM cases WHERE ";
+    let query = `
+      SELECT
+        c.id,
+        c.title,
+        c.description,
+        c.status,
+        c.hearing_date,
+        lawyer.name AS lawyer_name,
+        client.name AS client_name
+      FROM
+        cases AS c
+      JOIN
+        users AS lawyer ON c.lawyer_id = lawyer.user_id
+      JOIN
+        users AS client ON c.client_id = client.user_id
+      WHERE
+    `;
     const params = [];
 
     if (role === 'lawyer') {
-      query += "lawyer_id = ?";
+      query += "c.lawyer_id = ?";
       params.push(user_id);
     } else if (role === 'client') {
-      query += "client_id = ?";
+      query += "c.client_id = ?";
       params.push(user_id);
     } else {
       return res.status(403).json({ message: 'You are not authorized to view cases' });
     }
 
     if (search) {
-      query += " AND (title LIKE ? OR description LIKE ?)";
+      query += " AND (c.title LIKE ? OR c.description LIKE ?)";
       const searchPattern = `%${search}%`;
       params.push(searchPattern, searchPattern);
     }

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+let token = null;
+
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
   timeout: 5000,
@@ -7,7 +9,6 @@ const api = axios.create({
 
 // Add auth token to requests
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -17,13 +18,13 @@ api.interceptors.request.use((config) => {
 // Auth
 export const login = async (email, password) => {
   const res = await api.post('/auth/login', { email, password });
-  localStorage.setItem('token', res.data.token);
+  token = res.data.token;
   return res.data;
 };
 
 export const register = async (email, password, name, role) => {
   const res = await api.post('/auth/register', { email, password, name, role });
-  localStorage.setItem('token', res.data.token);
+  token = res.data.token;
   return res.data;
 };
 
@@ -33,7 +34,7 @@ export const getCurrentUser = async () => {
 };
 
 export const logout = () => {
-  localStorage.removeItem('token');
+  token = null;
 };
 
 // Cases

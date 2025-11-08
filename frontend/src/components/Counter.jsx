@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef } from 'react';
 
 export default function CountUp({
   to,
-  from = 9999,
+  from = 5000,
   direction = 'up',
   delay = 0,
-  duration = 2,
+  duration = 1,
   className = '',
   startWhen = true,
   separator = '',

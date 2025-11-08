@@ -39,9 +39,9 @@ const RequestCase = () => {
             required 
           />
         </div>
-        <div className="form-group">
+        <div className="form-group input">
           <label>Description</label>
-          <textarea 
+          <input 
             value={description} 
             onChange={(e) => setDescription(e.target.value)} 
             required 
@@ -65,7 +65,7 @@ const RequestCase = () => {
             required 
           />
         </div>
-        <button type="submit">Send Request</button>
+        <button type="submit" className="submit">Send Request</button>
         {error && <div className="error">{error}</div>}
         {success && <div className="success">{success}</div>}
       </form>

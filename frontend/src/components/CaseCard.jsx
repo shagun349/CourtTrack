@@ -40,6 +40,8 @@ const CaseCard = ({ item, user, onDecline, onApprove }) => {
       <div className="card-title">{item.title}</div>
       <div className="card-body">{item.description}</div>
       <div className="card-meta">Status: {item.status}</div>
+      <div className="card-meta">Lawyer: {item.lawyer_name}</div>
+    
       {hearingDate && (
         <div className="card-meta">
           Hearing: {hearingLabel} {hearingDatePassed ? <span className="badge past">Past</span> : <span className="badge upcoming">Upcoming</span>}

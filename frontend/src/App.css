@@ -39,20 +39,54 @@ header {
 
 .header-content {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
+  align-items: center; /* vertical centering */
+  justify-content: flex-start; /* keep items in the left corner */
+  gap: 22px; /* space between logo and nav */
+  height: 40px; /* reduced navbar height */
+  padding: 0 8px; /* small horizontal breathing room inside header */
 }
 
 .logo {
-  font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
-nav {
-  display: flex;
-  gap: 8px;
+.logo-icon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent); /* SVG uses currentColor */
 }
+
+.logo-icon svg{ display:block; width:20px; height:20px; }
+
+.logo-text{ line-height:1; }
+
+nav {
+  position: relative; /* needed for the sliding indicator */
+  display: flex;
+  gap: 4px;
+  align-items: center; /* ensure nav items are vertically centered inside the shorter header */
+}
+
+/* sliding indicator that animates between tabs */
+.nav-indicator{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  height: 28px; /* matches typical button height */
+  background: var(--accent);
+  border-radius: 6px;
+  transition: left 260ms cubic-bezier(.2,.9,.3,1), width 260ms cubic-bezier(.2,.9,.3,1), opacity 200ms;
+  z-index: 1;
+  opacity: 0;
+}
+
+nav button{ position: relative; z-index: 2; }
 
 nav button {
   padding: 8px 12px;
@@ -65,7 +99,8 @@ nav button {
 }
 
 nav button.active {
-  background: var(--accent);
+  /* background handled by animated indicator; keep text color for contrast */
+  background: transparent;
   color: #111;
 }
 
@@ -133,6 +168,7 @@ nav button.active {
 }
 
 .btn.primary {
+  
   background: var(--accent);
   color: #111;
   border-color: transparent;
@@ -145,7 +181,7 @@ nav button.active {
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:48px 16px
+  padding:55px 16px
 }
 
 .hero-title{
@@ -186,6 +222,7 @@ nav button.active {
 
 .form-group {
   margin-bottom: 16px;
+   background: transparent;
 }
 
 .form-group label {
@@ -212,6 +249,12 @@ nav button.active {
   color: #111;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.submit{
+  padding: 10px;
+  border-color:  #b97a2a;
+  background-color: #b97a2a;
 }
 
 @media (max-width: 720px) {

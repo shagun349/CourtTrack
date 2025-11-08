@@ -19,22 +19,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [unreadNotifications, setUnreadNotifications] = useState(0);
 
-  // Check for existing auth token on mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const userData = await getCurrentUser();
-        setUser(userData);
-      } catch {
-        // Token invalid or expired
-        setUser(null);
-      }
-    };
-    
-    if (localStorage.getItem('token')) {
-      checkAuth();
-    }
-  }, []);
+
 
   useEffect(() => {
     let mounted = true;

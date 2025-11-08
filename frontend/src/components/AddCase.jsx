@@ -41,7 +41,7 @@ const AddCase = () => {
         </div>
         <div className="form-group">
           <label>Description</label>
-          <textarea 
+          <input
             value={description} 
             onChange={(e) => setDescription(e.target.value)} 
             required 
@@ -65,7 +65,7 @@ const AddCase = () => {
             required 
           />
         </div>
-        <button type="submit">Add Case</button>
+        <button type="submit" className='submit'>Add Case</button>
         {error && <div className="error">{error}</div>}
         {success && <div className="success">{success}</div>}
       </form>
