@@ -22,6 +22,11 @@ function App() {
   const [lawyerSearchQuery, setLawyerSearchQuery] = useState('');
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [lawyerEmailForRequest, setLawyerEmailForRequest] = useState(null);
+  const [lawyerFilters, setLawyerFilters] = useState({
+    minApprovalRate: '',
+    minWins: '',
+    minCases: '',
+  });
 
 
 
@@ -39,7 +44,7 @@ function App() {
           const data = await fetchCases(caseSearchQuery);
           if (mounted) setCases(data || []);
         } else if (selection === 'lawyers') {
-          const data = await fetchLawyers(lawyerSearchQuery);
+          const data = await fetchLawyers(lawyerSearchQuery, lawyerFilters);
           if (mounted) setLawyers(data || []);
         }
       } catch (err) {
@@ -56,7 +61,7 @@ function App() {
     return () => {
       mounted = false;
     };
-  }, [selection, caseSearchQuery, lawyerSearchQuery, user]);
+  }, [selection, caseSearchQuery, lawyerSearchQuery, lawyerFilters, user]);
 
   useEffect(() => {
     const loadUnreadNotifications = async () => {
@@ -76,6 +81,10 @@ function App() {
       return () => clearInterval(intervalId); // Cleanup on unmount
     }
   }, [user]);
+
+  const handleLawyerFilterChange = (filters) => {
+    setLawyerFilters(filters);
+  };
 
   const handleSearch = (query) => {
     if (selection === 'cases') {
@@ -129,6 +138,8 @@ function App() {
         searchQuery={selection === 'cases' ? caseSearchQuery : lawyerSearchQuery}
         onLogout={handleLogout}
         unreadNotifications={unreadNotifications}
+        lawyerFilters={lawyerFilters}
+        onLawyerFilterChange={handleLawyerFilterChange}
       />
 
       <main className="container">

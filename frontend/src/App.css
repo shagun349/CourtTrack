@@ -111,6 +111,8 @@ nav button.active {
   cursor: pointer;
 }
 
+.lawyer-filters { display: none; }
+
 .user-actions {
   display: flex;
   align-items: center;
