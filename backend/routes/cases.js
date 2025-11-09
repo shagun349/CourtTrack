@@ -4,10 +4,23 @@ import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Initialize cases table
+// Initialize cases table (and notifications table required by your trigger)
 const initTables = async () => {
   try {
     const db = await dbPromise;
+
+    // Ensure notifications table exists (trigger expects these columns)
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS notifications (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        is_read BOOLEAN NOT NULL DEFAULT FALSE
+      )
+    `);
+
+    // Create cases table
     await db.query(`
       CREATE TABLE IF NOT EXISTS cases (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -22,15 +35,17 @@ const initTables = async () => {
         FOREIGN KEY (client_id) REFERENCES users(user_id)
       )
     `);
-    // Ensure existing table includes 'rejected' in the enum (best-effort alter for existing DBs)
+
+    // Ensure existing table includes full enum list (best-effort alter for existing DBs)
     try {
       await db.query("ALTER TABLE cases MODIFY COLUMN status ENUM('pending', 'approved', 'rejected', 'won', 'lost') DEFAULT 'pending'");
     } catch (err) {
-      // Ignore errors from ALTER (e.g., column already has the value list or DB doesn't support modification). The CREATE above will handle new databases.
+      // ignore ALTER errors (column already matches or DB differs)
     }
-    console.log('✅ Cases table initialized');
+
+    console.log('✅ Cases and notifications tables initialized');
   } catch (err) {
-    console.error('Error creating cases table:', err);
+    console.error('Error creating cases/notifications tables:', err);
     throw err;
   }
 };
@@ -325,11 +340,11 @@ router.put("/cases/:id/flag", auth, async (req, res) => {
       return res.status(400).json({ message: 'Cannot flag case before hearing date' });
     }
 
-    // Update case status
+    // Update case status (this will fire your DB trigger)
     await db.query("UPDATE cases SET status = ? WHERE id = ?", [status, case_id]);
 
-    // Create notification for the client
-    const notificationMessage = `Your case \"${caseToFlag.title}" has been marked as ${status} by your lawyer.`
+    // Create notification for the client (trigger will create its notification too)
+    const notificationMessage = `Your case "${caseToFlag.title}" has been marked as ${status} by your lawyer.`;
     await db.query(
       "INSERT INTO notifications (user_id, message) VALUES (?, ?)",
       [caseToFlag.client_id, notificationMessage]
