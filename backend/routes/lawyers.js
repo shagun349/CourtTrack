@@ -6,8 +6,9 @@ import { getAllLawyers } from '../models/lawyer.js';
 // GET /api/lawyers
 router.get('/lawyers', async (req, res) => {
   try {
-    const { search } = req.query;
-    const lawyers = await getAllLawyers(search);
+    const { search, minApprovalRate, minWins, minCases } = req.query;
+    const filters = { minApprovalRate, minWins, minCases };
+    const lawyers = await getAllLawyers(search, filters);
     res.json(lawyers);
   } catch (error) {
     console.error(error);

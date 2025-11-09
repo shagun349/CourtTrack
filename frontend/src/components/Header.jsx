@@ -1,13 +1,22 @@
 import { useRef, useEffect } from 'react';
 import Magnet from './Magnet';
 
-const Header = ({ selection, onChange, user, onSearch, onLogout, unreadNotifications, searchQuery }) => {
+const Header = ({ 
+  selection, 
+  onChange, 
+  user, 
+  onSearch, 
+  onLogout, 
+  unreadNotifications, 
+  searchQuery
+}) => {
   const navRef = useRef(null);
   const indicatorRef = useRef(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
   };
+
 
   // Position and animate the sliding indicator whenever selection or layout changes
   useEffect(() => {
@@ -92,6 +101,7 @@ const Header = ({ selection, onChange, user, onSearch, onLogout, unreadNotificat
               <button type="submit">Search</button>
             </form>
           )}
+          {/* filters removed from header */}
           <div className="user-actions">
             {user ? (
               <>
