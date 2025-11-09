@@ -80,8 +80,8 @@ export const flagCase = async (id, status) => {
 
 
 // Lawyers
-export const fetchLawyers = async () => {
-  const res = await api.get('/lawyers');
+export const fetchLawyers = async (search) => {
+  const res = await api.get('/lawyers', { params: { search } });
   return res.data;
 };
 

@@ -54,7 +54,7 @@ router.get("/notifications/unread-count", auth, async (req, res) => {
   try {
     const db = await dbPromise;
     const [[{ count }]] = await db.query(
-      "SELECT COUNT(*) AS count FROM notifications WHERE user_id = ? AND is_read = FALSE",
+      "SELECT unread_count FROM unread_notifications_view WHERE user_id = ?;",
       [req.user.user_id]
     );
     res.json({ unreadCount: count });

@@ -1,10 +1,10 @@
 
 import { dbPromise } from '../db.js';
 
-async function getAllLawyers() {
+async function getAllLawyers(search) {
   const db = await dbPromise;
 
-  const [lawyers] = await db.query(`
+  let query = `
     SELECT
       u.user_id AS id,
       u.name,
@@ -20,8 +20,17 @@ async function getAllLawyers() {
     FROM users u
     JOIN lawyers l ON u.user_id = l.user_id
     LEFT JOIN cases c ON u.user_id = c.lawyer_id
-    GROUP BY u.user_id
-  `);
+  `;
+
+  const params = [];
+  if (search) {
+    query += ` WHERE u.name LIKE ? OR u.email LIKE ?`;
+    params.push(`%${search}%`, `%${search}%`);
+  }
+
+  query += ` GROUP BY u.user_id`;
+
+  const [lawyers] = await db.query(query, params);
 
   return lawyers;
 }

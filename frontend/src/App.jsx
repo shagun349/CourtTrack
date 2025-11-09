@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchCases, getCurrentUser, fetchNotifications, logout,fetchUnreadNotificationCount } from './api';
+import { fetchCases, getCurrentUser, fetchNotifications, logout,fetchUnreadNotificationCount, fetchLawyers } from './api';
 import Header from './components/Header';
 import ErrorBoundary from './components/ErrorBoundary';
 import CaseCard from './components/CaseCard';
@@ -14,6 +14,7 @@ import Lawyers from './components/Lawyers';
 function App() {
   const [selection, setSelection] = useState('landing');
   const [cases, setCases] = useState([]);
+  const [lawyers, setLawyers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
@@ -31,24 +32,26 @@ function App() {
     let mounted = true;
     const load = async () => {
       setError(null);
-      if (selection === 'cases') {
-        setLoading(true);
-        try {
+      setLoading(true);
+      try {
+        if (selection === 'cases') {
           const data = await fetchCases(searchQuery);
-          if (!mounted) return;
-          setCases(data || []);
-        } catch {
-          if (!mounted) return;
-          setError('Failed to load cases');
-        } finally {
-          if (mounted) setLoading(false);
+          if (mounted) setCases(data || []);
+        } else if (selection === 'lawyers') {
+          const data = await fetchLawyers(searchQuery);
+          if (mounted) setLawyers(data || []);
         }
+      } catch (err) {
+        if (mounted) setError(`Failed to load ${selection}`);
+      } finally {
+        if (mounted) setLoading(false);
       }
     };
 
-    if (user && selection === 'cases') {
+    if (user && (selection === 'cases' || selection === 'lawyers')) {
       load();
     }
+
     return () => {
       mounted = false;
     };
@@ -155,6 +158,8 @@ function App() {
                 {selection === 'lawyers' && (
                   <Lawyers 
                     user={user}
+                    lawyers={lawyers}
+                    searchQuery={searchQuery}
                     onSelectLawyer={(email) => {
                       setLawyerEmailForRequest(email);
                       setSelection('request-case');
