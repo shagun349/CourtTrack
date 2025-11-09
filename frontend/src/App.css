@@ -2,52 +2,40 @@
   text-align: center;
   margin: auto;
   max-width: 1200px;
+  background: transparent;
 }
-
-.cases {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.case {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-}
-
-
 
 /* Header */
 .header {
-  background: var(--card);
+  background: var(--primary); /* primary used for navbar */
   padding: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--card);
 }
 
 .header-content {
   display: flex;
-  align-items: center; /* vertical centering */
-  justify-content: flex-start; /* keep items in the left corner */
-  gap: 22px; /* space between logo and nav */
-  height: 40px; /* reduced navbar height */
-  padding: 0 8px; /* small horizontal breathing room inside header */
+  align-items: center;
+  justify-content: flex-start;
+  gap: 22px;
+  height: 56px;
+  padding: 0 12px;
 }
 
 .logo {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: 700;
+  color: black;
 }
 
 .logo-icon{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent); /* SVG uses currentColor */
+  color: black; /* SVG uses currentColor */
 }
 
 .logo-icon svg{ display:block; width:20px; height:20px; }
@@ -55,10 +43,10 @@
 .logo-text{ line-height:1; }
 
 nav {
-  position: relative; /* needed for the sliding indicator */
+  position: relative;
   display: flex;
   gap: 4px;
-  align-items: center; /* ensure nav items are vertically centered inside the shorter header */
+  align-items: center;
 }
 
 /* sliding indicator that animates between tabs */
@@ -67,8 +55,8 @@ nav {
   top: 50%;
   transform: translateY(-50%);
   left: 0;
-  height: 28px; /* matches typical button height */
-  background: var(--accent);
+  height: 28px;
+  background: var(--primary); /* primary indicator */
   border-radius: 6px;
   transition: left 260ms cubic-bezier(.2,.9,.3,1), width 260ms cubic-bezier(.2,.9,.3,1), opacity 200ms;
   z-index: 1;
@@ -82,25 +70,25 @@ nav button {
   border-radius: 6px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--text);
+  color: var(--accent); /* nav text on primary header */
   cursor: pointer;
   font-size: 0.95rem;
-  
 }
 
 nav button.active {
-  /* background handled by animated indicator; keep text color for contrast */
-  background: transparent;
-  color: #111;
+  /* text on active tab */
+  color: #fff;
 }
 
+/* header-right sits on the right, keep icons readable on dark header */
 .header-right {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-left: auto; /* push header-right to the far right while nav stays in the left corner */
+  margin-left: auto;
 }
 
+/* Search in header - keep subtle using off-white inputs */
 .search-form {
   display: flex;
 }
@@ -109,9 +97,9 @@ nav button.active {
   width: 200px;
   padding: 8px 10px;
   border-radius: 6px 0 0 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: transparent;
-  color: var(--text);
+  border: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.06);
+  color: black;
 }
 
 .search-form button {
@@ -119,7 +107,7 @@ nav button.active {
   border-radius: 0 6px 6px 0;
   border: 1px solid var(--accent);
   background: var(--accent);
-  color: #111;
+  color: var(--card);
   cursor: pointer;
 }
 
@@ -133,7 +121,7 @@ nav button.active {
   position: relative;
   background: transparent;
   border: none;
-  color: var(--text);
+  color: var(--card);
   font-size: 1.5rem;
   cursor: pointer;
 }
@@ -147,34 +135,33 @@ nav button.active {
   border-radius: 50%;
   padding: 2px 6px;
   font-size: 0.75rem;
-  z-index: 3; /* ensure badge overlays other elements */
+  z-index: 3;
 }
 
 .btn {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--primary);
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  color: var(--text);
+  color: var(--card);
 }
 
 #login-btn {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #b97a2a;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--primary);
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  color: var(--text);
+  color: var(--card);
 }
 
 .btn.primary {
   padding: 8px;
-  background: #b97a2a;
-  color: #111;
+  background: var(--primary);
+  color: var(--card);
   border-color: transparent;
 }
-
 
 /* Landing */
 .landing .hero{
@@ -182,27 +169,29 @@ nav button.active {
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:55px 16px
+  padding:55px 16px;
+  color: var(--text);
 }
 
 .hero-title{
   font-size:2.25rem;
-  margin:0
+  margin:0;
+  color: var(--text);
 }
 
 .hero-sub{
   color:var(--muted);
-  margin-top:8px
+  margin-top:8px;
 }
 
 .hero-actions{
   margin-top:18px;
   display:flex;
-  gap:12px
+  gap:12px;
 }
 
 .view{
-  margin-top:16px
+  margin-top:16px;
 }
 
 /* Auth Forms */
@@ -212,33 +201,19 @@ nav button.active {
   padding: 24px;
   background: var(--card);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 24px rgba(16,24,40,0.06);
+  color: var(--text);
 }
 
-.auth-form h2 {
-  margin: 0 0 24px;
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-.form-group {
-  margin-bottom: 16px;
-   background: transparent;
-}
-
+/* small form tweaks */
 .form-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 0.9rem;
+  color: var(--text);
 }
 
 .form-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
   background: transparent;
   color: var(--text);
+  border: 1px solid rgba(16,24,40,0.06);
 }
 
 .auth-form button {
@@ -246,17 +221,23 @@ nav button.active {
   padding: 12px;
   border: none;
   border-radius: 4px;
-  background: var(--accent);
-  color: #111;
+  background: var(--primary);
+  color: var(--card);
   font-size: 1rem;
   cursor: pointer;
 }
 
 .submit{
   padding: 10px;
-  border-color:  #b97a2a;
-  background-color: #b97a2a;
+  border-color:  var(--primary);
+  background-color: var(--primary);
+  color: var(--card);
 }
+
+/* status colors utilities (use in JS/classes) */
+.status-success { color: var(--success); }
+.status-warning { color: var(--warning); }
+.status-error   { color: var(--danger); }
 
 @media (max-width: 720px) {
   .header-content {

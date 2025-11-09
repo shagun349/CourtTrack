@@ -7,7 +7,7 @@ const initDb = async () => {
   try {
     // First create database if it doesn't exist
     const initConnection = await mysql.createConnection({
-      host: "localhost",
+      host: "",
       user: "root",
       password: "Nischay28#"
     });

@@ -1,25 +1,32 @@
 /* Base reset and typography */
 :root{
-	--bg:#0b0b0b;
-	--card:#111111;
-	--muted:#bfb1a8;
-	--accent:#b97a2a; /* warm brown accent */
-	--accent-2:#8b5e34;
-	--danger:#ef4444;
-	--text:#e6e1de;
+	/* Theme (updated) */
+	--primary: #1C1C1C;    /* Charcoal black - Header, main text */
+	--secondary: #003366;  /* Law firm navy - Buttons */
+	--accent: #B4975A;     /* Gold - Highlights / logos */
+	--background: #dfdfdf; /* General background */
+	--surface: #FFFFFF;    /* Cards / panels */
+	--text: #1C1C1C;       /* Primary text color (same as primary) */
+	--muted: #4B5563;      /* Text secondary / muted details */
+
+	/* legacy/compat variables used across the app */
+	--bg: var(--background);
+	--card: var(--surface);
+	--accent-2: #927646;   /* darker gold variant if needed */
+	--danger: #EF4444;
+	--success: #10B981;
+	--warning: #F59E0B;
 }
 
-/* brown theme variant */
+/* brown theme variant (optional, preserved) */
 :root[data-theme='brown']{
-	--bg:#1a120f;
-	--card:#231815;
-	--muted:#cdbfb6;
-	--accent:#b97a2a;
-	--accent-2:#7a4b2b;
-	--text:#f1ece8;
+    --bg:#1a120f;
+    --card:#231815;
+    --muted:#cdbfb6;
+    --accent:#b97a2a;
+    --accent-2:#7a4b2b;
+    --text:#f1ece8;
 }
-
-
 
 *{box-sizing:border-box}
 html,body,#root{height:100%;}
@@ -77,3 +84,6 @@ body{
   
   .auth-form{margin:20px;padding:16px}
 }
+
+/* Ensure links/buttons that rely on currentColor inherit the new palette */
+a, button { color: inherit; }

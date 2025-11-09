@@ -6,7 +6,8 @@ import { getAllLawyers } from '../models/lawyer.js';
 // GET /api/lawyers
 router.get('/lawyers', async (req, res) => {
   try {
-    const lawyers = await getAllLawyers();
+    const { search } = req.query;
+    const lawyers = await getAllLawyers(search);
     res.json(lawyers);
   } catch (error) {
     console.error(error);
