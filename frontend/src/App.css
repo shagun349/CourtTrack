@@ -77,7 +77,7 @@ nav button {
 
 nav button.active {
   /* text on active tab */
-  color: var(--accent);
+  color: #fff;
 }
 
 /* header-right sits on the right, keep icons readable on dark header */

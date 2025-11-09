@@ -52,12 +52,19 @@ router.get("/notifications", auth, async (req, res) => {
 // Count unread notifications
 router.get("/notifications/unread-count", auth, async (req, res) => {
   try {
-    const db = await dbPromise;
-    const [[{ count }]] = await db.query(
-      "SELECT unread_count FROM unread_notifications_view WHERE user_id = ?;",
-      [req.user.user_id]
-    );
-    res.json({ unreadCount: count });
+  const db = await dbPromise;
+const [rows] = await db.query(
+  "SELECT user_name, COUNT(*) AS unread_count FROM unread_notifications_view WHERE user_name = (SELECT name FROM users WHERE user_id = ?) GROUP BY user_name;",
+  [req.user.user_id]
+);
+
+ 
+
+    if (rows.length > 0) {
+      res.json({ unreadCount: rows[0].unread_count });
+    } else {
+      res.json({ unreadCount: 0 });
+    }
   } catch (err) {
     console.error("Error fetching unread count:", err);
     res.status(500).json({ message: "Failed to fetch unread count" });

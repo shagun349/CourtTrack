@@ -7,9 +7,9 @@ const initDb = async () => {
   try {
     // First create database if it doesn't exist
     const initConnection = await mysql.createConnection({
-      host: "localhost",
+      host: "",
       user: "root",
-      password: "shagun17"
+      password: "Nischay28#"
     });
 
     await initConnection.query('CREATE DATABASE IF NOT EXISTS courttrack');
@@ -19,7 +19,7 @@ const initDb = async () => {
     const pool = mysql.createPool({
       host: "localhost",
       user: "root",
-      password: "shagun17",
+      password: "Nischay28#",
       database: "courttrack",
       waitForConnections: true,
       connectionLimit: 10,

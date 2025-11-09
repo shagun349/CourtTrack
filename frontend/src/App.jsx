@@ -18,7 +18,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [caseSearchQuery, setCaseSearchQuery] = useState('');
+  const [lawyerSearchQuery, setLawyerSearchQuery] = useState('');
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [lawyerEmailForRequest, setLawyerEmailForRequest] = useState(null);
 
@@ -35,10 +36,10 @@ function App() {
       setLoading(true);
       try {
         if (selection === 'cases') {
-          const data = await fetchCases(searchQuery);
+          const data = await fetchCases(caseSearchQuery);
           if (mounted) setCases(data || []);
         } else if (selection === 'lawyers') {
-          const data = await fetchLawyers(searchQuery);
+          const data = await fetchLawyers(lawyerSearchQuery);
           if (mounted) setLawyers(data || []);
         }
       } catch (err) {
@@ -55,26 +56,33 @@ function App() {
     return () => {
       mounted = false;
     };
-  }, [selection, searchQuery, user]);
+  }, [selection, caseSearchQuery, lawyerSearchQuery, user]);
 
   useEffect(() => {
-  const loadUnreadNotifications = async () => {
-    try {
-      // fetchUnreadNotificationCount() returns a number (unread count).
-      const unreadCount = await fetchUnreadNotificationCount();
-      setUnreadNotifications(unreadCount ?? 0);
-    } catch (err) {
-      console.error("Failed to load unread notifications:", err);
-    }
-  };
+    const loadUnreadNotifications = async () => {
+      try {
+        const unreadCount = await fetchUnreadNotificationCount();
+        console.log('Unread notification count:', unreadCount); // Add this line
+        setUnreadNotifications(unreadCount ?? 0);
+      } catch (err) {
+        console.error("Failed to load unread notifications:", err);
+      }
+    };
 
-  if (user) {
-    loadUnreadNotifications();
-  }
-}, [user]);
+    if (user) {
+      loadUnreadNotifications(); // Initial load
+      const intervalId = setInterval(loadUnreadNotifications, 15000); // Poll every 15 seconds
+
+      return () => clearInterval(intervalId); // Cleanup on unmount
+    }
+  }, [user]);
 
   const handleSearch = (query) => {
-    setSearchQuery(query);
+    if (selection === 'cases') {
+      setCaseSearchQuery(query);
+    } else if (selection === 'lawyers') {
+      setLawyerSearchQuery(query);
+    }
   };
 
   const handleLogin = async () => {
@@ -118,6 +126,7 @@ function App() {
         onChange={setSelection}
         user={user}
         onSearch={handleSearch}
+        searchQuery={selection === 'cases' ? caseSearchQuery : lawyerSearchQuery}
         onLogout={handleLogout}
         unreadNotifications={unreadNotifications}
       />
@@ -159,7 +168,7 @@ function App() {
                   <Lawyers 
                     user={user}
                     lawyers={lawyers}
-                    searchQuery={searchQuery}
+                    searchQuery={lawyerSearchQuery}
                     onSelectLawyer={(email) => {
                       setLawyerEmailForRequest(email);
                       setSelection('request-case');
