@@ -7,6 +7,7 @@ import { getAllLawyers } from '../models/lawyer.js';
 router.get('/lawyers', async (req, res) => {
   try {
     const { search, minApprovalRate, minWins, minCases } = req.query;
+    console.log('Search query:', search);
     const filters = { minApprovalRate, minWins, minCases };
     const lawyers = await getAllLawyers(search, filters);
     res.json(lawyers);

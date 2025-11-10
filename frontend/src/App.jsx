@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchCases, getCurrentUser, fetchNotifications, logout,fetchUnreadNotificationCount, fetchLawyers } from './api';
+import { fetchCases, getCurrentUser, logout,fetchUnreadNotificationCount, fetchLawyers } from './api';
 import Header from './components/Header';
 import ErrorBoundary from './components/ErrorBoundary';
 import CaseCard from './components/CaseCard';

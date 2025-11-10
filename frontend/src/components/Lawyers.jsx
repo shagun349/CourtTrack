@@ -1,34 +1,9 @@
 
-import { useState, useEffect, useMemo } from 'react';
-import { fetchLawyers } from '../api';
+import { useState, useMemo } from 'react';
 import LawyerCard from './LawyerCard';
 
-export default function Lawyers({ user, onSelectLawyer }) {
-  const [lawyers, setLawyers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+export default function Lawyers({ user, lawyers, onSelectLawyer }) {
   const [filter, setFilter] = useState('all');
-
-  useEffect(() => {
-    let mounted = true;
-    const loadLawyers = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchLawyers();
-        if (mounted) {
-          const sortedData = (data || []).sort((a, b) => (b.wins || 0) - (a.wins || 0));
-          setLawyers(sortedData);
-        }
-      } catch {
-        if (mounted) setError('Failed to load lawyers');
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-
-    loadLawyers();
-    return () => { mounted = false; };
-  }, []);
 
   const displayedLawyers = useMemo(() => {
     if (!lawyers) return [];
@@ -63,17 +38,12 @@ export default function Lawyers({ user, onSelectLawyer }) {
         </div>
       </div>
 
-      {loading && <div className="muted">Loading...</div>}
-      {error && <div className="error">{error}</div>}
-
-      {!loading && !error && (
-        <div className="grid cards">
-          {displayedLawyers.map((l) => (
-            <LawyerCard key={l.id} lawyer={l} user={user} onSelect={onSelectLawyer} />
-          ))}
-          {displayedLawyers.length === 0 && <div className="muted">No lawyers found.</div>}
-        </div>
-      )}
+      <div className="grid cards">
+        {displayedLawyers.map((l) => (
+          <LawyerCard key={l.id} lawyer={l} user={user} onSelect={onSelectLawyer} />
+        ))}
+        {displayedLawyers.length === 0 && <div className="muted">No lawyers found.</div>}
+      </div>
     </div>
   );
 }

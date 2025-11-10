@@ -58,6 +58,9 @@ async function getAllLawyers(search, { minApprovalRate, minWins, minCases }) {
     query += ` HAVING ${havingClauses.join(' AND ')}`;
   }
 
+  console.log('Generated SQL:', query);
+  console.log('Query params:', params);
+
   const [lawyers] = await db.query(query, params);
 
   return lawyers;
