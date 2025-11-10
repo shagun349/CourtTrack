@@ -140,4 +140,20 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// Public endpoint to fetch total users count (used on landing page)
+router.get('/users/count', async (req, res) => {
+  try {
+    const db = await dbPromise;
+    const [rows] = await db.query('SELECT COUNT(*) as count FROM users');
+    const count = rows && rows[0] ? rows[0].count : 0;
+    res.json({ count });
+  } catch (err) {
+    console.error('Error fetching users count:', err);
+    res.status(500).json({
+      message: 'Failed to fetch users count',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    });
+  }
+});
+
 export default router;

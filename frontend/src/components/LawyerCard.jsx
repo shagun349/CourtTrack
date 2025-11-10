@@ -26,7 +26,7 @@ export default function LawyerCard({ lawyer, user, onSelect }) {
         })()
       )}
       {user && user.role === 'client' && (
-        <button onClick={handleRequest} className="btn primary">
+        <button onClick={handleRequest} className="btn primary2">
           Request Lawyer
         </button>
       )}

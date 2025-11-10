@@ -1,0 +1,40 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dashboard preview">
+  <rect width="1200" height="720" rx="16" fill="#F6F7F9"/>
+  <rect x="40" y="40" width="1120" height="120" rx="10" fill="#FFFFFF" stroke="#E6E9EE"/>
+  <rect x="40" y="180" width="720" height="420" rx="10" fill="#FFFFFF" stroke="#E6E9EE"/>
+  <rect x="780" y="180" width="380" height="160" rx="10" fill="#FFFFFF" stroke="#E6E9EE"/>
+  <rect x="780" y="360" width="180" height="120" rx="10" fill="#FFFFFF" stroke="#E6E9EE"/>
+  <rect x="980" y="360" width="180" height="120" rx="10" fill="#FFFFFF" stroke="#E6E9EE"/>
+
+  <!-- chart lines -->
+  <path d="M80 260 C160 240, 220 300, 300 280 C380 260, 460 300, 560 260 C660 220, 700 300, 760 280" stroke="#36A2EB" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <circle cx="80" cy="260" r="6" fill="#36A2EB" />
+  <circle cx="300" cy="280" r="6" fill="#36A2EB" />
+  <circle cx="560" cy="260" r="6" fill="#36A2EB" />
+  <circle cx="760" cy="280" r="6" fill="#36A2EB" />
+
+  <!-- sidebar blocks -->
+  <rect x="64" y="56" width="120" height="16" rx="4" fill="#EEF2F6" />
+  <rect x="200" y="56" width="220" height="16" rx="4" fill="#EEF2F6" />
+  <rect x="440" y="56" width="420" height="16" rx="4" fill="#EEF2F6" />
+
+  <!-- subtle icons -->
+  <rect x="96" y="200" width="80" height="12" rx="3" fill="#F3F5F7" />
+  <rect x="96" y="222" width="220" height="12" rx="3" fill="#F3F5F7" />
+  <rect x="96" y="244" width="140" height="12" rx="3" fill="#F3F5F7" />
+
+  <rect x="804" y="196" width="120" height="12" rx="3" fill="#F3F5F7" />
+  <rect x="804" y="220" width="220" height="12" rx="3" fill="#F3F5F7" />
+
+  <!-- small KPI boxes -->
+  <rect x="820" y="372" width="140" height="20" rx="6" fill="#36A2EB" />
+  <rect x="1020" y="372" width="60" height="20" rx="6" fill="#34D399" />
+
+  <!-- rounded shadow -->
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#0A0A0A" flood-opacity="0.06" />
+    </filter>
+  </defs>
+  <rect x="40" y="40" width="1120" height="560" rx="12" fill="transparent" filter="url(#shadow)" />
+</svg>

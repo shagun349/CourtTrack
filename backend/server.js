@@ -32,6 +32,19 @@ app.use("/api/auth", userRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", lawyerRoutes);
 
+// Public users count endpoint: respond to frontend request at /api/users/count
+app.get('/api/users/count', async (req, res) => {
+  try {
+    const db = await dbPromise;
+    const [rows] = await db.query('SELECT COUNT(*) as count FROM users');
+    const count = rows && rows[0] ? rows[0].count : 0;
+    res.json({ count });
+  } catch (err) {
+    console.error('Error fetching users count (server alias):', err);
+    res.status(500).json({ message: 'Failed to fetch users count' });
+  }
+});
+
 // Test route
 app.get("/", (req, res) => {
   // Test database connection (use promise pool)
