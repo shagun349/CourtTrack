@@ -52,13 +52,13 @@ const CaseCard = ({ item, user, onDecline, onApprove, onFlag }) => {
       )}
       {user && user.role === 'lawyer' && item.status === 'pending' && (
         <div className="card-actions">
-          <button className="btn primary" onClick={handleApprove}>Approve</button>
+          <button className="btn " onClick={handleApprove}>Approve</button>
           <button className="btn" onClick={handleDecline}>Decline</button>
         </div>
       )}
       {user && user.role === 'lawyer' && item.status === 'approved' && hearingDatePassed && (
         <div className="card-actions">
-          <button className="btn primary" onClick={() => handleFlag('won')}>Mark as Won</button>
+          <button className="btn " onClick={() => handleFlag('won')}>Mark as Won</button>
           <button className="btn" onClick={() => handleFlag('lost')}>Mark as Lost</button>
         </div>
       )}

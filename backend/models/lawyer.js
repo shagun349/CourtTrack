@@ -9,7 +9,6 @@ async function getAllLawyers(search, { minApprovalRate, minWins, minCases }) {
       u.user_id AS id,
       u.name,
       u.email,
-      l.specialization,
       COALESCE(cases_stats.total_cases, 0) AS total_cases,
       COALESCE(cases_stats.wins, 0) AS wins,
       COALESCE(cases_stats.losses, 0) AS losses,

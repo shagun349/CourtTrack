@@ -44,7 +44,6 @@ Designed lawyer and client dashboards with searchable case histories, document m
 │    CREATE TABLE `lawyers` (                                                            │    
 │      `lawyer_id` int NOT NULL AUTO_INCREMENT,                                          │    
 │      `user_id` int DEFAULT NULL,                                                       │    
-│      `specialization` varchar(100) DEFAULT NULL,                                       │    
 │      PRIMARY KEY (`lawyer_id`),                                                        │    
 │      KEY `user_id` (`user_id`),                                                        │    
 │      CONSTRAINT `lawyers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id` │    

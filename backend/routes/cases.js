@@ -251,13 +251,9 @@ router.put("/cases/:id/approve", auth, async (req, res) => {
     // Update case status
     await db.query("UPDATE cases SET status = 'approved' WHERE id = ?", [case_id]);
 
-    // Create notification for the client
-    const notificationMessage = `Your case request for "${caseToApprove.title}" has been approved by your lawyer.`
-    await db.query(
-      "INSERT INTO notifications (user_id, message) VALUES (?, ?)",
-      [caseToApprove.client_id, notificationMessage]
-    );
+    // Notif created by trigger
 
+    
     res.json({ message: 'Case approved successfully' });
   } catch (err) {
     console.error('Error approving case:', err);
